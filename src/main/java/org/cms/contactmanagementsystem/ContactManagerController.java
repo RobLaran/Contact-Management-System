@@ -16,6 +16,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.FXPermission;
 
 import java.io.IOException;
@@ -122,7 +123,7 @@ public class ContactManagerController implements SceneLoader, Initializable {
 
                 Scene secondaryScene = new Scene(sceneRoot);
                 Stage secondaryStage = new Stage();
-
+                secondaryStage.initStyle(StageStyle.UNDECORATED);
                 secondaryStage.setScene(secondaryScene);
                 secondaryStage.setResizable(false);
                 secondaryStage.sizeToScene();

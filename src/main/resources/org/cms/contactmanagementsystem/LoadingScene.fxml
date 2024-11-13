@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.cms.contactmanagementsystem.LoadingScene">
+<AnchorPane prefHeight="107.0" prefWidth="340.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.cms.contactmanagementsystem.LoadingController">
    <children>
-      <ProgressBar layoutX="200.0" layoutY="191.0" prefWidth="200.0" progress="0.0" />
+      <ProgressBar fx:id="loadingBar" layoutX="44.0" layoutY="46.0" prefHeight="38.0" prefWidth="258.0" progress="0.0" />
+      <Label fx:id="percentage1" alignment="CENTER" contentDisplay="CENTER" layoutX="44.0" layoutY="14.0" prefHeight="32.0" prefWidth="258.0" text="Loading contacts..." textAlignment="CENTER">
+         <font>
+            <Font size="22.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

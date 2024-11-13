@@ -11,6 +11,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -50,13 +51,37 @@ public class LoginController implements SceneLoader {
     @FXML
     void loginUser(ActionEvent event) {
         if(authentication.verifyUser(usernameLogin.getText(), passwordLogin.getText(), emailLogin.getText())) {
-                loadScene("ContactManagerScene.fxml", event);
+            loadLoadingScene(event);
         }
     }
 
     @FXML
     void switchToRegisterForm(MouseEvent event) {
         loadScene("RegisterScene.fxml", event);
+    }
+
+    public void loadLoadingScene(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("LoadingScene.fxml"));
+            Parent loadingRoot = loader.load();
+            Scene loadingScene = new Scene(loadingRoot);
+
+            LoadingController controller = loader.getController();
+            controller.passUser(authentication.getUser());
+            stage = ((Stage)((Node)event.getSource()).getScene().getWindow());
+            stage.close();
+            stage = new Stage();
+            if(!stage.isShowing()) {
+                stage.initStyle(StageStyle.UNDECORATED);
+            }
+            stage.setScene(loadingScene);
+            stage.setResizable(false);
+            stage.sizeToScene();
+            stage.show();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override
@@ -73,7 +98,6 @@ public class LoginController implements SceneLoader {
             scene = new Scene(root);
             stage = (Stage)((Node)e.getSource()).getScene().getWindow();
 
-            stage.hide();
             stage.setScene(scene);
             stage.setResizable(false);
             stage.sizeToScene();
