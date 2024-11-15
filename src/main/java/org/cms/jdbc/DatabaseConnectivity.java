@@ -1,7 +1,6 @@
 package org.cms.jdbc;
 
 import org.cms.contactmanagementsystem.Contact;
-import org.cms.contactmanagementsystem.User;
 
 import java.sql.*;
 
@@ -43,8 +42,14 @@ public class DatabaseConnectivity {
         return statement.executeQuery(query);
     }
 
-    public static ResultSet fetchContactDetail(String name, int userID) throws SQLException {
+    public static ResultSet fetchContactWithName(String name, int userID) throws SQLException {
         query = "select * from contact where user_id = " + userID + " and contact_name = '"+name+"';";
+
+        return statement.executeQuery(query);
+    }
+
+    public static ResultSet fetchContactWithNumber(String number, int userID) throws SQLException {
+        query = "select * from contact where user_id = " + userID + " and contact_number = "+number+";";
 
         return statement.executeQuery(query);
     }
@@ -141,6 +146,8 @@ public class DatabaseConnectivity {
 
         statement.executeUpdate(query);
     }
+
+
 
 //    insert into user (username, phone_number, password, email)
 //              values('bambi', 094719364, 'rsbambi', 'bambs@gmail.com');

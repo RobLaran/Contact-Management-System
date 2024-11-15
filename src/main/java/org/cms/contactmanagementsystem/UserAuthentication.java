@@ -3,12 +3,11 @@ package org.cms.contactmanagementsystem;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import org.cms.jdbc.DatabaseConnectivity;
+import org.cms.utilities.Validator;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class UserAuthentication {
     User user;
@@ -24,7 +23,6 @@ public class UserAuthentication {
     private String userPassword;
 
     private Alert alert;
-
 
     int ID;
     String userName;
@@ -45,14 +43,17 @@ public class UserAuthentication {
                 if(!registerUsername(name)) {
                     showAlert("Username already used", Alert.AlertType.WARNING);
                     return false;
-                } else if(!registerEmail(email)) {
-                    showAlert("Email already used", Alert.AlertType.WARNING);
+                } else if(!Validator.validateEmail(email)) {
+                    showAlert("Email incorrect", Alert.AlertType.WARNING);
                     return false;
-                }else if(!checkRetypePassword(password, retypePassword)) {
+                } else if(!checkRetypePassword(password, retypePassword)) {
                     showAlert("Password mismatch", Alert.AlertType.WARNING);
                     return false;
                 } else if(!phoneNumberValidation(phoneNumber)) {
                     showAlert("Incorrect phone number", Alert.AlertType.WARNING);
+                    return false;
+                } else if(!registerEmail(email)) {
+                    showAlert("Email already used", Alert.AlertType.WARNING);
                     return false;
                 }
             }
@@ -68,16 +69,8 @@ public class UserAuthentication {
         return DatabaseConnectivity.getUsername(name) == null;
     }
 
-    private boolean registerPassword(String password) {
-        return DatabaseConnectivity.getPassword(password) == null;
-    }
-
     private boolean registerEmail(String email) {
         return DatabaseConnectivity.getUserEmail(email) == null;
-    }
-
-    private boolean registerPhoneNumber(Long number) {
-        return DatabaseConnectivity.getUserPhoneNumber(number) == 0;
     }
 
     public boolean verifyUser(String name, String password, String email)  {
@@ -128,12 +121,7 @@ public class UserAuthentication {
     }
 
     private boolean phoneNumberValidation(String phoneNumber) {
-        String numberPatter = "\\d{11,20}";
-        Pattern pattern = Pattern.compile(numberPatter);
-
-        Matcher matcher = pattern.matcher(String.valueOf(phoneNumber));
-
-        return matcher.matches();
+        return Validator.validatePhoneNumber(phoneNumber);
     }
 
     private boolean checkRetypePassword(String password, String retypePassword) throws SQLException {

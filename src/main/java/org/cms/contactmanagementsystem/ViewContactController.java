@@ -30,7 +30,7 @@ public class ViewContactController {
 
     public void loadContactDetails(String name) {
         try {
-            ResultSet resultSet = DatabaseConnectivity.fetchContactDetail(name, contactManager.getUser().getID());
+            ResultSet resultSet = DatabaseConnectivity.fetchContactWithName(name, contactManager.getUser().getID());
 
             while(resultSet.next()) {
                 viewName.setText(resultSet.getString("contact_name"));

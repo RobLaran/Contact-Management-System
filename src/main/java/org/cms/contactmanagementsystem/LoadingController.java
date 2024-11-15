@@ -1,16 +1,10 @@
 package org.cms.contactmanagementsystem;
 
-import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableDoubleValue;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -20,19 +14,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Duration;
-import javafx.util.FXPermission;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
-import java.util.Timer;
 
 public class LoadingController implements Initializable {
     User user;
@@ -60,7 +49,7 @@ public class LoadingController implements Initializable {
         timeLine.setAutoReverse(false);
 
         KeyValue kv = new KeyValue(loadingBar.progressProperty(), 1);
-        KeyFrame kf = new KeyFrame(Duration.millis(3000), kv);
+        KeyFrame kf = new KeyFrame(Duration.millis(1900), kv);
         timeLine.getKeyFrames().add(kf);
         timeLine.play();
 
@@ -85,6 +74,8 @@ public class LoadingController implements Initializable {
                         stage = new Stage();
                         stage.setScene(scene);
                         stage.setResizable(false);
+                        stage.setTitle("Contact Manager");
+                        stage.getIcons().add(new Image(getClass().getResourceAsStream("/img/cmLogo.png")));
                         stage.show();
                     } catch (IOException e) {
                         throw new RuntimeException(e);

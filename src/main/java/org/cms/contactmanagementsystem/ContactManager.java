@@ -1,17 +1,11 @@
 package org.cms.contactmanagementsystem;
 
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.ListView;
 import org.cms.jdbc.DatabaseConnectivity;
+import org.cms.utilities.Validator;
 
-import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class ContactManager  {
     private User user;
@@ -66,7 +60,7 @@ public class ContactManager  {
 
     public Contact getContact(String name) {
         try {
-            ResultSet resultSet = DatabaseConnectivity.fetchContactDetail(name, user.getID());
+            ResultSet resultSet = DatabaseConnectivity.fetchContactWithName(name, user.getID());
             Contact contact = null;
 
             while(resultSet.next()) {
@@ -113,5 +107,25 @@ public class ContactManager  {
         }
 
         return loadedList;
+    }
+
+    public String searchContact(String searchedContact) {
+        try {
+            ResultSet resultSet;
+
+            if(Validator.checkNumber(searchedContact)) {
+                resultSet = DatabaseConnectivity.fetchContactWithNumber(searchedContact, user.getID());
+            } else {
+                resultSet = DatabaseConnectivity.fetchContactWithName(searchedContact, user.getID());
+            }
+
+            if(resultSet.next()) {
+                return resultSet.getString("contact_name");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return "not found";
     }
 }

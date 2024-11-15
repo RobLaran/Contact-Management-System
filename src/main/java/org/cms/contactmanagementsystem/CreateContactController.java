@@ -3,17 +3,13 @@ package org.cms.contactmanagementsystem;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.URL;
 import java.sql.SQLException;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.Comparator;
 
 public class CreateContactController {
     ContactManager contactManager;
@@ -38,6 +34,7 @@ public class CreateContactController {
 
     ContactManagerController controller;
     Contact newContact;
+
     @FXML
     void addNewContact(ActionEvent event) throws IOException, SQLException {
         String name = contactName.getText();
@@ -71,6 +68,12 @@ public class CreateContactController {
         }
 
         contacts.add(name);
+        contacts.sort(new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return o1.compareTo(o2);
+            }
+        });
 
         newContact = contactManager.createContact(name,phone,email,address,relationship);
         contactManager.addContact(newContact);
@@ -89,5 +92,10 @@ public class CreateContactController {
 
     public void getContactManager(ContactManager contactManager) {
         this.contactManager = contactManager;
+    }
+
+    public void close(ActionEvent e) {
+        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+        stage.close();
     }
 }

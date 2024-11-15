@@ -17,12 +17,13 @@
             <Font size="22.0" />
          </font>
       </Label>
-      <Button contentDisplay="CENTER" graphicTextGap="0.0" layoutX="113.0" layoutY="242.0" mnemonicParsing="false" onAction="#addNewContact" prefWidth="90.0" text="Add Contact" />
+      <Button contentDisplay="CENTER" graphicTextGap="0.0" layoutX="193.0" layoutY="242.0" mnemonicParsing="false" onAction="#addNewContact" prefWidth="90.0" text="Add Contact" />
       <TextField fx:id="contactName" layoutX="134.0" layoutY="54.0" />
       <TextField fx:id="contactEmail" layoutX="134.0" layoutY="87.0" />
       <TextField fx:id="contactNumber" layoutX="134.0" layoutY="119.0" />
       <TextField fx:id="contactAddress" layoutX="134.0" layoutY="155.0" />
       <TextField fx:id="contactRelationship" layoutX="134.0" layoutY="189.0" />
       <Label layoutX="33.0" layoutY="192.0" prefHeight="18.0" prefWidth="90.0" text="Relationship:" />
+      <Button contentDisplay="CENTER" graphicTextGap="0.0" layoutX="33.0" layoutY="242.0" mnemonicParsing="false" onAction="#close" prefWidth="90.0" text="Close" />
    </children>
 </AnchorPane>

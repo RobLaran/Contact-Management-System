@@ -12,12 +12,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.FXPermission;
 
 import java.io.IOException;
 import java.net.URL;
@@ -62,6 +61,7 @@ public class ContactManagerController implements SceneLoader, Initializable {
             secondaryStage.setResizable(false);
             secondaryStage.sizeToScene();
             secondaryStage.initModality(Modality.APPLICATION_MODAL);
+            secondaryStage.initStyle(StageStyle.UNDECORATED);
             secondaryStage.setX(950);
             secondaryStage.setY(100);
             secondaryStage.show();
@@ -96,6 +96,12 @@ public class ContactManagerController implements SceneLoader, Initializable {
 
     public void loadContacts() throws SQLException {
         contactList.getItems().addAll(contactManager.loadContacts());
+        contactList.getItems().sort(new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return o1.compareTo(o2);
+            }
+        });
     }
 
     public void contactSelection(MouseEvent e) {
@@ -139,7 +145,12 @@ public class ContactManagerController implements SceneLoader, Initializable {
 
     public void searchContact(KeyEvent e) {
         if(!searchBar.getText().isEmpty() && e.getCode() == KeyCode.ENTER) {
-            contactList.getSelectionModel().select(searchBar.getText());
+            String searchedContact = contactManager.searchContact(searchBar.getText());
+            System.out.println(searchedContact);
+            if(!searchedContact.equals("not found")) {
+                contactList.getSelectionModel().select(searchedContact);
+                contactList.scrollTo(searchedContact);
+            }
 
             if(contactList.getSelectionModel().isEmpty()) {
                 System.out.println("Contact not found");
@@ -200,6 +211,16 @@ public class ContactManagerController implements SceneLoader, Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         contacts = FXCollections.observableArrayList();
+
         contactList.setItems(contacts);
+
+        contactList.setCellFactory(l -> new ListCell<String>(){
+            @Override
+            protected void updateItem(String s, boolean b) {
+                super.updateItem(s, b);
+                setText(s);
+                setFont(new Font(21));
+            }
+        });
     }
 }
