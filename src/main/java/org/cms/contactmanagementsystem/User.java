@@ -1,5 +1,9 @@
 package org.cms.contactmanagementsystem;
 
+import org.cms.jdbc.DatabaseConnectivity;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +14,9 @@ public class User {
     private Long phoneNumber;
     private String email;
     private String password;
+    private String address;
+    private int numberOfContacts;
+    private String note;
 
     private List<Contact> userContacts;
 
@@ -21,6 +28,7 @@ public class User {
         this.password = password;
 
         userContacts = new ArrayList<>();
+
     }
 
     public void setName(String name) {
@@ -41,6 +49,18 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setNumberOfContacts(int numberOfContacts) {
+        this.numberOfContacts = numberOfContacts;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     public String getName() {
@@ -65,9 +85,66 @@ public class User {
 
     public void putContact(Contact contact) {
         userContacts.add(contact);
+        this.numberOfContacts++;
     }
 
     public List<Contact> getContacts() {
-        return this.userContacts;
+        try {
+            if(userContacts.isEmpty()) {
+                ResultSet resultSet = DatabaseConnectivity.fetchContact(getID());
+
+                while(resultSet.next()) {
+                    String name = resultSet.getString("contact_name");
+                    String email = resultSet.getString("email");
+                    String phone = resultSet.getString("contact_number");
+                    String address = resultSet.getString("address");
+                    String relationship = resultSet.getString("relationship");
+                    String note = resultSet.getString("note");
+                    int ID = resultSet.getInt("user_id");
+
+                    Contact contact = new Contact(name, email, phone, address, relationship);
+                    contact.setDescription(note);
+                    contact.setUserID(ID);
+
+                    userContacts.add(contact);
+                }
+            } else {
+                userContacts.clear();
+                ResultSet resultSet = DatabaseConnectivity.fetchContact(getID());
+
+                while(resultSet.next()) {
+                    String name = resultSet.getString("contact_name");
+                    String email = resultSet.getString("email");
+                    String phone = resultSet.getString("contact_number");
+                    String address = resultSet.getString("address");
+                    String relationship = resultSet.getString("relationship");
+                    String note = resultSet.getString("note");
+                    int ID = resultSet.getInt("user_id");
+
+                    Contact contact = new Contact(name, email, phone, address, relationship);
+                    contact.setDescription(note);
+                    contact.setUserID(ID);
+
+                    userContacts.add(contact);
+                }
+            }
+
+            return this.userContacts;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
+
+    public String getAddress() {
+        return this.address;
+    }
+
+    public int getNumberOfContacts() {
+        return this.numberOfContacts;
+    }
+
+    public String getNote() {
+        return this.note;
+    }
+
 }

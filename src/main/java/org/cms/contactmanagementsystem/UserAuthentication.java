@@ -40,7 +40,7 @@ public class UserAuthentication {
                 showAlert("Fill in the blank", Alert.AlertType.WARNING);
                 return false;
             } else {
-                if(!registerUsername(name)) {
+                if(registerUsername(name)) {
                     showAlert("Username already used", Alert.AlertType.WARNING);
                     return false;
                 } else if(!Validator.validateEmail(email)) {
@@ -50,9 +50,9 @@ public class UserAuthentication {
                     showAlert("Password mismatch", Alert.AlertType.WARNING);
                     return false;
                 } else if(!phoneNumberValidation(phoneNumber)) {
-                    showAlert("Incorrect phone number", Alert.AlertType.WARNING);
+                    showAlert("Incorrect phone number or already used", Alert.AlertType.WARNING);
                     return false;
-                } else if(!registerEmail(email)) {
+                } else if(registerEmail(email)) {
                     showAlert("Email already used", Alert.AlertType.WARNING);
                     return false;
                 }
@@ -66,16 +66,16 @@ public class UserAuthentication {
     }
 
     private boolean registerUsername(String name) {
-        return DatabaseConnectivity.getUsername(name) == null;
+        return DatabaseConnectivity. findUsername(name);
     }
 
     private boolean registerEmail(String email) {
-        return DatabaseConnectivity.getUserEmail(email) == null;
+        return DatabaseConnectivity.findEmail(email);
     }
 
     public boolean verifyUser(String name, String password, String email)  {
         try {
-            loadResultSet(name);
+            loadResultSet(name, password, email);
 
             if(name.isBlank() || password.isBlank() || email.isBlank()) {
                 showAlert("Fill in the blank", Alert.AlertType.WARNING);
@@ -84,11 +84,11 @@ public class UserAuthentication {
                 if(!checkUsername(name)) {
                     showAlert("Incorrect Username", Alert.AlertType.WARNING);
                     return false;
-                } else if(!checkEmail(email)){
-                    showAlert("Incorrect Email", Alert.AlertType.WARNING);
-                    return false;
-                } else if(!checkPassword(password)) {
+                } else if(!checkPassword(name, password)){
                     showAlert("Incorrect Password", Alert.AlertType.WARNING);
+                    return false;
+                } else if(!checkEmail(name, password, email)) {
+                    showAlert("Incorrect Email", Alert.AlertType.WARNING);
                     return false;
                 }
             }
@@ -109,19 +109,19 @@ public class UserAuthentication {
     }
 
     private boolean checkUsername(String name) throws SQLException {
-        return user.getName().equals(name);
+        return DatabaseConnectivity.getUsername(name);
     }
 
-    private boolean checkPassword(String password) throws SQLException {
-        return user.getPassword().equals(password);
+    private boolean checkPassword(String name, String password) throws SQLException {
+        return DatabaseConnectivity.getPassword(name, password);
     }
 
-    private boolean checkEmail(String email) throws SQLException {
-        return user.getEmail().equals(email);
+    private boolean checkEmail(String name, String password, String email) throws SQLException {
+        return DatabaseConnectivity.getEmail(name, password, email);
     }
 
     private boolean phoneNumberValidation(String phoneNumber) {
-        return Validator.validatePhoneNumber(phoneNumber);
+        return Validator.validatePhoneNumber(phoneNumber) && !DatabaseConnectivity.findPhoneNumber(phoneNumber);
     }
 
     private boolean checkRetypePassword(String password, String retypePassword) throws SQLException {
@@ -132,14 +132,17 @@ public class UserAuthentication {
         DatabaseConnectivity.insertUserData(name,password, phone, email);
     }
 
-    public void loadResultSet(String name) throws SQLException {
+    public void loadResultSet(String name, String password, String email) throws SQLException {
         if(!name.isBlank()) {
-            ResultSet resultSet = DatabaseConnectivity.fetchUsers(name);
+            resultSet = DatabaseConnectivity.fetchUser(name, password, email);
 
             while(resultSet.next()) {
                 user = new User(resultSet.getInt("user_id"), resultSet.getString("username"),
                         resultSet.getLong("phone_number"), resultSet.getString("email"),
                         resultSet.getString("password"));
+                user.setAddress(resultSet.getString("address"));
+                user.setNumberOfContacts(resultSet.getInt("number_of_contacts"));
+                user.setNote(resultSet.getString("note"));
             }
         }
     }

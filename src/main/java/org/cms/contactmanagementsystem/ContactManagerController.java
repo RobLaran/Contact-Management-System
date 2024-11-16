@@ -114,6 +114,31 @@ public class ContactManagerController implements SceneLoader, Initializable {
 
     }
 
+    public void viewUser(ActionEvent e) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("UserDetailScene.fxml"));
+            Parent sceneRoot = loader.load();
+
+            UserDetailController controller = loader.getController();
+            controller.getContactManager(contactManager);
+            controller.loadUserDetail();
+            controller.setCmController(this);
+
+            Scene secondaryScene = new Scene(sceneRoot);
+            Stage secondaryStage = new Stage();
+            secondaryStage.initStyle(StageStyle.UNDECORATED);
+            secondaryStage.setScene(secondaryScene);
+            secondaryStage.setResizable(false);
+            secondaryStage.sizeToScene();
+            secondaryStage.initModality(Modality.APPLICATION_MODAL);
+            secondaryStage.setX(950);
+            secondaryStage.setY(100);
+            secondaryStage.show();
+        } catch (IOException ioExc) {
+            ioExc.printStackTrace();
+        }
+    }
+
     public void viewContact(ActionEvent e) {
         String contactName = contactList.getSelectionModel().getSelectedItem();
 
@@ -126,6 +151,7 @@ public class ContactManagerController implements SceneLoader, Initializable {
                 controller.getContactManager(contactManager);
                 controller.setCurrentContact(contactManager.getContact(contactName));
                 controller.loadContactDetails(contactName);
+                controller.setCmController(this);
 
                 Scene secondaryScene = new Scene(sceneRoot);
                 Stage secondaryStage = new Stage();
@@ -146,7 +172,6 @@ public class ContactManagerController implements SceneLoader, Initializable {
     public void searchContact(KeyEvent e) {
         if(!searchBar.getText().isEmpty() && e.getCode() == KeyCode.ENTER) {
             String searchedContact = contactManager.searchContact(searchBar.getText());
-            System.out.println(searchedContact);
             if(!searchedContact.equals("not found")) {
                 contactList.getSelectionModel().select(searchedContact);
                 contactList.scrollTo(searchedContact);
@@ -208,10 +233,15 @@ public class ContactManagerController implements SceneLoader, Initializable {
         }
     }
 
+    public void refresh() throws SQLException {
+        contactList.getItems().clear();
+        loadContacts();
+        userNameLabel.setText(contactManager.getUser().getName());
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         contacts = FXCollections.observableArrayList();
-
         contactList.setItems(contacts);
 
         contactList.setCellFactory(l -> new ListCell<String>(){

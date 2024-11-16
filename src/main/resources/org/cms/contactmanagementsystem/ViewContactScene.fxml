@@ -10,7 +10,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="496.0" prefWidth="375.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.cms.contactmanagementsystem.ViewContactController">
    <children>
-      <TextArea fx:id="notes" editable="false" focusTraversable="false" layoutX="32.0" layoutY="237.0" prefHeight="202.0" prefWidth="311.0">
+      <TextArea fx:id="notes" editable="false" focusTraversable="false" layoutX="32.0" layoutY="237.0" prefHeight="202.0" prefWidth="311.0" wrapText="true">
          <cursor>
             <Cursor fx:constant="DEFAULT" />
          </cursor></TextArea>

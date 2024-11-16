@@ -42,6 +42,14 @@ public class ContactManager  {
         }
     }
 
+    public void editUser() {
+        try {
+            DatabaseConnectivity.updateUser(user);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void editContact(Contact contact) {
         try {
             DatabaseConnectivity.updateContact(contact);
@@ -83,22 +91,27 @@ public class ContactManager  {
     }
 
     public List<String> loadContacts() throws SQLException {
-        ResultSet allContactsFromUser = DatabaseConnectivity.fetchContacts(user.getID());
+//        ResultSet allContactsFromUser = DatabaseConnectivity.fetchContact(user.getID());
+//
+//        while(allContactsFromUser.next()) {
+//            int userID = allContactsFromUser.getInt("user_id");
+//            String contactName = allContactsFromUser.getString("contact_name");
+//            String contactNumber = allContactsFromUser.getString("contact_number");
+//            String email = allContactsFromUser.getString("email");
+//            String address = allContactsFromUser.getString("address");
+//            String relationship = allContactsFromUser.getString("relationship");
+//
+//            Contact newContact = new Contact(contactName, email, contactNumber, address, relationship);
+//            newContact.setID(userID);
+//            user.putContact(newContact);
+//        }
 
-        while(allContactsFromUser.next()) {
-            int userID = allContactsFromUser.getInt("user_id");
-            String contactName = allContactsFromUser.getString("contact_name");
-            String contactNumber = allContactsFromUser.getString("contact_number");
-            String email = allContactsFromUser.getString("email");
-            String address = allContactsFromUser.getString("address");
-            String relationship = allContactsFromUser.getString("relationship");
-
-            Contact newContact = new Contact(contactName, email, contactNumber, address, relationship);
-            newContact.setID(userID);
-            user.putContact(newContact);
+        if(contactList.isEmpty()) {
+            contactList.addAll(user.getContacts());
+        } else {
+            contactList.clear();
+            contactList.addAll(user.getContacts());
         }
-
-        contactList.addAll(user.getContacts());
 
         List<String> loadedList = new ArrayList<>();
 

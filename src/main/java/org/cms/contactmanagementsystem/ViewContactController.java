@@ -2,6 +2,7 @@ package org.cms.contactmanagementsystem;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -12,6 +13,7 @@ import java.sql.SQLException;
 
 
 public class ViewContactController {
+    ContactManagerController cmController;
     ContactManager contactManager;
     Contact contact;
     boolean edited = false;
@@ -74,6 +76,10 @@ public class ViewContactController {
         this.contact = contact;
     }
 
+    public void setCmController(ContactManagerController cmController) {
+        this.cmController = cmController;
+    }
+
     public void close(ActionEvent e) {
         if(edited) {
             String name = viewName.getText();
@@ -90,10 +96,20 @@ public class ViewContactController {
             this.contact.setRelationship(relationship);
             this.contact.setDescription(note);
 
+            System.out.println(contactManager.getUser().getName());
             contactManager.editContact(this.contact);
             edited = false;
         }
         Stage stage = (Stage)((Node) e.getSource()).getScene().getWindow();
-        stage.close();
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("ContactManagerScene.fxml"));
+        ContactManagerController controller = loader.getController();
+
+        try {
+            stage.close();
+            cmController.refresh();
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }
