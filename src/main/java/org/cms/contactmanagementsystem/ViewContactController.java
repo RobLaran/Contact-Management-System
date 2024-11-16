@@ -96,7 +96,6 @@ public class ViewContactController {
             this.contact.setRelationship(relationship);
             this.contact.setDescription(note);
 
-            System.out.println(contactManager.getUser().getName());
             contactManager.editContact(this.contact);
             edited = false;
         }
